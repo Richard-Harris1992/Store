@@ -2,6 +2,7 @@
 require("dotenv").config();
 const express = require("express");
 const db = require("mongoose");
+//const bcrypt = require("bcryptjs") maybe not needed here, just in model
 const override = require('method-override')
 const app = express();
 const port = 3000;
