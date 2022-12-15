@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   product: [{type: ObjectId, required: false}],
   vendor: {type: Boolean},
   customer: {type: Boolean},
+  loggedIn: {type: Boolean, default: false},
   date:{ type : Date, default: Date.now }
 });
 

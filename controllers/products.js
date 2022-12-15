@@ -1,18 +1,29 @@
-const react = require('react');
 const express = require('express');
-const Product = require("../models/product.js")
-const User = require("../models/user.js")
+const Product = require("../models/product.js");
+const User = require("../models/user.js");
 const router = express.Router();
 router.use(express.urlencoded({extended: false}));
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+
 router.get("/:id/add", (req, res) => {
     User.findById(req.params.id, (err, userObj) => {
-        res.render("Product", {user: userObj});
+        if(userObj.loggedIn) {
+            res.render("Product", {user: userObj});
+        } else {
+            res.redirect("/");
+        }
     })
     
 })
+// router.put("/:id", (req, res) => {
+//     User.findById(req.params.id, (err, userToLogOut) => {
+//         userToLogOut.loggedIn = false;
+//         userToLogOut.save();
+//         res.redirect('/');
+//     })
+// });
 
 router.post("/:id", (req, res) => { 
     req.body.price = parseInt(req.body.price);
@@ -31,5 +42,7 @@ router.post("/:id", (req, res) => {
         })
     });
 });
+
+
 
 module.exports = router;

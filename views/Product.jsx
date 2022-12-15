@@ -1,10 +1,11 @@
 const React = require('react');
+const Layout = require('../views/Layout.jsx')
 
 class Product extends React.Component {
     render() {
         const user = this.props.user;
         return (
-            <div>
+            <Layout title={"Product's Form"} id={user.id}>
                   <form action={`/${user.id}`} method="POST">
                     <label htmlFor="productName">Product Name:</label><input type="text" name="productName" /><br />    
                     <label htmlFor="image">Image URL:</label><input type="text" name="image"/><br />
@@ -14,7 +15,7 @@ class Product extends React.Component {
                     <label htmlFor="keywords">Key Words:</label><input type="text" name="keywords" /><br />
                           <input type="submit" value="Add my product!" />
                 </form>
-            </div>
+            </Layout>
         )
     }
 }

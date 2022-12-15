@@ -15,6 +15,8 @@ router.post("/login", (req, res) => {
     User.findOne({email: req.body.email}).exec(function(error, user) {
       user.comparePassword(req.body.password, function(matchError, isMatch) {
           if (isMatch) {
+            user.loggedIn = true;
+            user.save();
             res.redirect(`/${user.id}`);
           } else {
             res.send(`Error : ${error}`);
