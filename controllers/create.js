@@ -13,7 +13,7 @@ router.get("/create", (req, res) => {
 
 //Create
 router.post("/create", (req, res) => {
-    console.log(req.body);
+
     if(req.body.customer === 'on') {
         req.body.customer = true;
     } else {

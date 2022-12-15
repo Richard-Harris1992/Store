@@ -18,6 +18,11 @@ app.use(login);
 const create = require("./controllers/create.js");
 app.use(create);
 
+const user = require('./controllers/index.js');
+app.use(user);
+
+const product = require('./controllers/addProduct.js')
+app.use(product);
 //Middleware
 app.use(override("_method"));
 
@@ -33,4 +38,4 @@ app.set("./views");
 app.set("view engine", "jsx");
 app.engine('jsx', require('express-react-views').createEngine());
 
-app.listen(port, () => console.log('hi'))
+app.listen(port, () => console.log('Listening on port 3000'))
