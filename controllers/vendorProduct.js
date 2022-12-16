@@ -143,24 +143,20 @@ router.put('/:id/:productId/addToCart', (req, res) => {
 })
 
 router.delete('/:id/shoppingCart', (req, res) => {
-    User.findById(req.params.id, (err, foundUser) => {
-    if (foundUser.loggedIn) {
-        Product.findByIdAndDelete(req.body.id, (err, deleted) => {
-            res.redirect(`/${req.params.id}`);
-        });
-    } else {
-        res.redirect("/");
-    }
+    User.findByIdAndUpdate(req.params.id, { $pull : { "shoppingCart" : req.body.id}}, (err, foundItems) => {
+            if(err) {
+                console.log(err)
+            }
+          res.redirect(`/${req.params.id}`);
     });
 });
+      
 
 router.delete('/:id/:productId', (req, res) => {
     Product.findByIdAndDelete(req.params.productId, (err, deleted) => {
-        if (deleted.loggedIn) {
-            res.redirect(`/${req.params.id}/myProducts`);
-        } else {
-            res.redirect("/");
-        }
+        User.findByIdAndUpdate(req.params.id, {$pull : {"product": req.params.productId}}, (err, stuff) => {
+            res.redirect(`/${req.params.id}/myProducts`);  
+           });
     })
 });
 

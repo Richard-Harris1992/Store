@@ -1,10 +1,10 @@
 const React = require('react');
 
-
 class Create extends React.Component {
     render() {
         return (
-            <div>
+            <div className ="main">
+                <link rel="stylesheet" href="../styles/Create.css" />
                 <p>Welcome to Richard's word</p>
                 <p>Please take a moment to create an account!</p>
 
