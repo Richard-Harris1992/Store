@@ -2,49 +2,35 @@ const express = require('express');
 const router = express.Router();
 const User = require("../models/user.js");
 const Product = require("../models/product.js");
+const override = require('method-override');
+const app = express();
+app.use(override("_method"));
 
-//Remember to check is loggedIn = true for all routes else redirect to "/";
+//Remember to check is loggedIn = true for all routes else redirect to "/"
 
 router.get("/:id", (req, res) => {
     Product.find({}, (err, products) => {
         User.findById(req.params.id, (err, loggedInUser) => {
-            if(loggedInUser.loggedIn) {
-                res.render("Index", {user: loggedInUser,product: products});
+            if (loggedInUser.loggedIn) {
+                res.render("Index", { user: loggedInUser, product: products });
             } else {
                 res.redirect("/");
             }
         });
-    });    
-}); 
-
-router.post("/:id", (req, res) => { 
-    req.body.price = parseInt(req.body.price);
-    let keywords = req.body.keywords.split(',');
-    req.body.keywords = keywords;
-    
-    Product.create(req.body, (err, newProduct) => { //creates a new product obj and persists to database
-        if(err) {
-            console.log(err);
-        }
-       User.findById(req.params.id, (err, updateUser) => { //Updates user obj to store product reference.
-            console.log(updateUser)
-            updateUser.product.push(newProduct.id);
-            updateUser.save();
-            res.redirect(`/${updateUser.id}`);
-        })
     });
 });
 
+
 router.get("/:id/myProducts", (req, res) => {
     User.findById(req.params.id, (err, foundUser) => {
-        
-        if(foundUser.loggedIn) {
+
+        if (foundUser.loggedIn) {
             Product.find({})
-            .where({_id : foundUser.product})
-            .exec(function(err, thing) { 
-                res.render("VendorProduct", {product: thing, user: foundUser});
-            });  
-            
+                .where({ _id: foundUser.product })
+                .exec(function (err, thing) {
+                    res.render("VendorProduct", { product: thing, user: foundUser });
+                });
+
         } else {
             res.redirect("/");
         }
@@ -53,38 +39,34 @@ router.get("/:id/myProducts", (req, res) => {
 
 router.get("/:id/add", (req, res) => {
     User.findById(req.params.id, (err, userObj) => {
-        if(userObj.loggedIn) {
-            res.render("Product", {user: userObj});
+        if (userObj.loggedIn) {
+            res.render("Product", { user: userObj });
         } else {
             res.redirect("/");
         }
     });
 });
 
-router.put('/:id/myProducts', (req, res) => {
-    
-    User.findByIdAndUpdate(req.params.id, req.body, (err, changes) => {
-        console.log(req.body)
-        res.redirect(`/${req.params.id}/myProducts`);
+router.get("/:id/shoppingCart", (req, res) => {
+    User.findById(req.params.id, (err, foundUser) => {
+        if (foundUser.loggedIn) {
+            Product.find({})
+                .where({ _id: foundUser.shoppingCart })
+                .exec(function (err, thing) {
+                    res.render("ShoppingCart", { product: thing, user: foundUser });
+                });
+
+        } else {
+            res.redirect("/");
+        }
     });
 });
 
-// router.put("/:id", (req, res) => {
-//     User.findById(req.params.id, (err, userToLogOut) => {
-//         userToLogOut.loggedIn = false;
-//         userToLogOut.save();
-//         res.redirect('/');
-//     })
-// });
-
-
-
-
 router.get("/:id/:productid", (req, res) => {
     User.findById(req.params.id, (err, userObj) => {
-        if(userObj.loggedIn) {
+        if (userObj.loggedIn) {
             Product.findById(req.params.productid, (err, item) => {
-                res.render("Show", {product: item, user: userObj});
+                res.render("Show", { product: item, user: userObj });
             });
         } else {
             res.redirect("/");
@@ -92,16 +74,101 @@ router.get("/:id/:productid", (req, res) => {
     });
 })
 
-
 router.get('/:id/:productId/edit', (req, res) => {
     Product.findById(req.params.productId, (err, foundProduct) => {
         User.findById(req.params.id, (err, foundUser) => {
-               res.render("Edit",{product: foundProduct, user: foundUser });
+            if (foundUser.loggedIn) {
+                res.render("Edit", { product: foundProduct, user: foundUser });
+            } else {
+                res.redirect("/");
+            }
         });
-     
     });
-   
+});
+
+
+
+router.post("/:id", (req, res) => {
+    req.body.price = parseInt(req.body.price);
+    let keywords = req.body.keywords.split(',');
+    req.body.keywords = keywords;
+
+    Product.create(req.body, (err, newProduct) => { //creates a new product obj and persists to database
+        if (err) {
+            console.log(err);
+        }
+        User.findById(req.params.id, (err, updateUser) => { //Updates user obj to store product reference.
+            if (updateUser.loggedIn) {
+                updateUser.product.push(newProduct.id);
+                updateUser.save();
+                res.redirect(`/${updateUser.id}`);
+            } else {
+                res.redirect("/");
+            }
+        })
+    });
+});
+
+router.put('/:id/myProducts', (req, res) => {
+    User.findByIdAndUpdate(req.params.id, req.body, (err, changes) => {
+        if (changes.loggedIn) {
+            res.redirect(`/${req.params.id}/myProducts`);
+        } else {
+            res.redirect("/");
+        }
+    });
+});
+
+router.put('/:id/:productId', (req, res) => {
+    Product.findByIdAndUpdate(req.params.productId, req.body, (err, changes) => {
+        if (changes.loggedIn) {
+            res.redirect(`/${req.params.id}/myProducts`);
+        } else {
+            res.redirect("/");
+        }
+    });
+});
+
+router.put('/:id/:productId/addToCart', (req, res) => {
+    User.findById(req.params.id, (err, foundUser) => {
+        if (foundUser.loggedIn) {
+            foundUser.shoppingCart.push(req.params.productId)
+            foundUser.save();
+            res.redirect(`/${req.params.id}`);
+        } else {
+            res.redirect("/");
+        }
+    });
+
 })
+
+router.delete('/:id/shoppingCart', (req, res) => {
+    User.findById(req.params.id, (err, foundUser) => {
+    if (foundUser.loggedIn) {
+        Product.findByIdAndDelete(req.body.id, (err, deleted) => {
+            res.redirect(`/${req.params.id}`);
+        });
+    } else {
+        res.redirect("/");
+    }
+    });
+});
+
+router.delete('/:id/:productId', (req, res) => {
+    Product.findByIdAndDelete(req.params.productId, (err, deleted) => {
+        if (deleted.loggedIn) {
+            res.redirect(`/${req.params.id}/myProducts`);
+        } else {
+            res.redirect("/");
+        }
+    })
+});
+
+
+
+
+
+
 
 
 module.exports = router;

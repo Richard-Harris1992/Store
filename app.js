@@ -8,9 +8,11 @@ const port = 3000;
 const User = require("./models/user.js");
 const Product = require("./models/product.js");
 
-//When I move to app it will put on the edit route. it updates also but never updates on server.
+
 
 //Routers
+app.use(override("_method"));
+
 const main = require("./controllers/main.js");
 app.use(main);
 
@@ -28,7 +30,7 @@ app.use(vendor);
 
 
 //Middleware
-app.use(override("_method"));
+
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.connection.once('open', ()=> {
@@ -42,13 +44,5 @@ app.set("./views");
 app.set("view engine", "jsx");
 app.engine('jsx', require('express-react-views').createEngine());
 
-
-app.put('/:id/:productId', (req, res) => {
-    
-    Product.findByIdAndUpdate(req.params.productId, req.body, (err, changes) => {
-        console.log(changes)
-        res.redirect(`/${req.params.id}/myProducts`);
-    });
-});
 
 app.listen(port, () => console.log('Listening on port 3000'))

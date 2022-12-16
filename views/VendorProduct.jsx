@@ -18,9 +18,12 @@ class VendorProduct extends React.Component {
                                     <p>Name : {item.productName}</p>
                                     <img src={item.image} alt="Product Image" />
                                     <form action={`/${user.id}/${item.id}/edit`} method="GET">
-                                        <input type="submit" value="Edit" />
+                                        <input type="submit" value="Edit Item" />
                                     </form>
-                                    <button>Delete</button>
+                                    <form action={`/${user.id}/myProducts?_method=DELETE`} method="POST">
+                                        <input type="submit" value="Delete Item" />
+                                    </form>
+                                   
                                 </div>
                         )
                     })    

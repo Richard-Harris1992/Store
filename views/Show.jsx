@@ -1,9 +1,13 @@
 const React = require('react');
 const Layout = require('../views/Layout.jsx');
 
-const isCustomer = (userObj) => {
+const isCustomer = (userObj, productObj) => {
     if(userObj.customer) {
-        return(<button><a href={`/${userObj.id}/add`}>Add to cart</a></button>)
+        return(  <form action={`/${userObj.id}/${productObj.id}/addToCart?_method=PUT`} method="POST">
+                    
+                    <input type="submit" value="Add to cart!" />
+                 </form>
+        )
     }
 }
 
@@ -17,7 +21,7 @@ class Show extends React.Component {
                 <p>{product.description}</p>
                 <p>{product.quantity}</p>
                 <p>${product.price}</p>
-                {isCustomer(user)}
+                {isCustomer(user, product)}
 
             </Layout>
         );
