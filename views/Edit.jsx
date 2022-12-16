@@ -9,7 +9,7 @@ class Edit extends React.Component {
         const user = this.props.user;
         return (
             <Layout title={"Edit Form"} id={user.id}>
-                  <form action={`/${user.id}/myProducts?_method=PUT`} method="POST">
+                  <form action={`/${user.id}/${product.id}?_method=PUT`} method="POST">
                     <label htmlFor="productName">Product Name:</label><input type="text" name="productName" /><br />    
                     <label htmlFor="image">Image URL:</label><input type="text" name="image"/><br />
                     <label htmlFor="description">Description: </label><input type="text" name="description" /><br />

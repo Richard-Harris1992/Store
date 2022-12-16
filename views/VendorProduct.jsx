@@ -8,7 +8,6 @@ class VendorProduct extends React.Component {
     render() {
         const product = this.props.product
         const user = this.props.user
-        console.log(product);
         return (
             <Layout title={"Your Products"} id={user.id}>
                 {
