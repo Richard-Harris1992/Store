@@ -1,8 +1,15 @@
 const React = require('react');
 const Layout = require('../views/Layout.jsx');
 
+const id = {
+    backgroundColor: '#f27059',
+    border: 'none'
+}
 
-
+const button = {
+    marginBottom: '7px',
+    backgroundColor: '#cbdfbd'
+}
 
 class ShoppingCart extends React.Component {
     render() {
@@ -15,11 +22,11 @@ class ShoppingCart extends React.Component {
                         return (
 
                             <div>
-                                <p>Name : {item.productName}</p>
+                                <p>Product name : {item.productName}</p>
                                 <img src={item.image} alt="Product Image" />
                                 <form action={`/${user.id}/shoppingCart?_method=DELETE`} method="POST">
-                                    <label htmlFor="productId">Product ID:</label><input type="text" name="id" value={`${item.id}`} readOnly /><br />
-                                    <input type="submit" value="Delete Item" />
+                                    <label htmlFor="productId">Product ID:</label><input style={id} type="text" name="id" value={`${item.id}`} readOnly /><br />
+                                    <input type="submit" value="Delete Item" style={button} />
                                 </form>
 
                             </div>

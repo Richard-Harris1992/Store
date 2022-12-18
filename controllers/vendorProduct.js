@@ -11,11 +11,7 @@ app.use(override("_method"));
 router.get("/:id", (req, res) => {
     Product.find({}, (err, products) => {
         User.findById(req.params.id, (err, loggedInUser) => {
-            if (loggedInUser.loggedIn) {
-                res.render("Index", { user: loggedInUser, product: products });
-            } else {
-                res.redirect("/");
-            }
+            res.render("Index", { user: loggedInUser, product: products });
         });
     });
 });
@@ -23,14 +19,17 @@ router.get("/:id", (req, res) => {
 
 router.get("/:id/myProducts", (req, res) => {
     User.findById(req.params.id, (err, foundUser) => {
-
+    
         if (foundUser.loggedIn) {
-            Product.find({})
-                .where({ _id: foundUser.product })
-                .exec(function (err, thing) {
-                    res.render("VendorProduct", { product: thing, user: foundUser });
-                });
-
+            if(foundUser.vendor == false) {
+                res.render("Error", {err: "You are not a vendor", user: foundUser});
+            } else {
+                 Product.find({})
+                    .where({ _id: foundUser.product })
+                    .exec(function (err, thing) {
+                        res.render("VendorProduct", { product: thing, user: foundUser });
+                     });
+                }
         } else {
             res.redirect("/");
         }
@@ -50,12 +49,15 @@ router.get("/:id/add", (req, res) => {
 router.get("/:id/shoppingCart", (req, res) => {
     User.findById(req.params.id, (err, foundUser) => {
         if (foundUser.loggedIn) {
-            Product.find({})
-                .where({ _id: foundUser.shoppingCart })
-                .exec(function (err, thing) {
+            if(foundUser.customer == false) {
+                res.render("Error", {err: "You are not a customer", user: foundUser});
+            } else {
+                 Product.find({})
+                    .where({ _id: foundUser.shoppingCart })
+                    .exec(function (err, thing) {
                     res.render("ShoppingCart", { product: thing, user: foundUser });
-                });
-
+                    });
+            }
         } else {
             res.redirect("/");
         }
@@ -132,9 +134,12 @@ router.put('/:id/:productId', (req, res) => {
 router.put('/:id/:productId/addToCart', (req, res) => {
     User.findById(req.params.id, (err, foundUser) => {
         if (foundUser.loggedIn) {
-            foundUser.shoppingCart.push(req.params.productId)
+            foundUser.shoppingCart.push(req.params.productId);
             foundUser.save();
-            res.redirect(`/${req.params.id}`);
+            Product.findByIdAndUpdate(req.params.productId, {$inc : {"quantity": -1}} , (err, product) => {
+                res.redirect(`/${req.params.id}`);
+            });
+            
         } else {
             res.redirect("/");
         }

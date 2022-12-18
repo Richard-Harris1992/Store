@@ -19,7 +19,7 @@ router.post("/login", (req, res) => {
             user.save();
             res.redirect(`/${user.id}`);
           } else {
-            res.send(`Error : ${error}`);
+            res.render("Error", {err: "Either username or password is incorrect. Please try again"} );
           }         
         });
       });

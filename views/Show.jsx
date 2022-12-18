@@ -2,13 +2,22 @@ const React = require('react');
 const Layout = require('../views/Layout.jsx');
 
 const isCustomer = (userObj, productObj) => {
-    if(userObj.customer) {
-        return(  <form action={`/${userObj.id}/${productObj.id}/addToCart?_method=PUT`} method="POST">
-                    
-                    <input type="submit" value="Add to cart!" />
-                 </form>
-        )
+    if(userObj.customer) { 
+        if(productObj.quantity > 0) {
+            return(  <form action={`/${userObj.id}/${productObj.id}/addToCart?_method=PUT`} method="POST">
+                        <input type="submit" value="Add to cart!" />
+                     </form>
+            );
+        } else {
+            return( 
+                        <button style={button}>Out of stock</button>
+            );
+        }
     }
+}
+const button = {
+    marginBottom: '7px',
+    backgroundColor: '#cbdfbd'
 }
 
 class Show extends React.Component {
@@ -18,9 +27,9 @@ class Show extends React.Component {
         return (
             <Layout title={product.productName} id={user.id}>
                 <img src={`${product.image}`} alt="Image of product" />
-                <p>{product.description}</p>
-                <p>{product.quantity}</p>
-                <p>${product.price}</p>
+                <p>Description: {product.description}</p>
+                <p>Quantity: {product.quantity}</p>
+                <p>Price: ${product.price}</p>
                 {isCustomer(user, product)}
 
             </Layout>
