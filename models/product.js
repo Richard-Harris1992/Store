@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
 	description:{type: String},
 	quantity : {type: Number},
 	price: {type: Number},
-	keywords: [{type: String}], //Use this for searchbar?
+	keywords: [{type: String}],
     dateAdded: {type : Date, default: Date.now}
 });
 

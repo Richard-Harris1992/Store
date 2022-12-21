@@ -26,7 +26,7 @@ class ShoppingCart extends React.Component {
                                 <img src={item.image} alt="Product Image" />
                                 <form action={`/${user.id}/shoppingCart?_method=DELETE`} method="POST">
                                     <label htmlFor="productId">Product ID:</label><input style={id} type="text" name="id" value={`${item.id}`} readOnly /><br />
-                                    <input type="submit" value="Delete Item" style={button} />
+                                    <input type="submit" value="Remove from cart." style={button} />
                                 </form>
 
                             </div>

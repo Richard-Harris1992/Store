@@ -6,7 +6,7 @@ const override = require('method-override');
 const app = express();
 app.use(override("_method"));
 
-//Remember to check is loggedIn = true for all routes else redirect to "/"
+
 
 router.get("/:id", (req, res) => {
     Product.find({}, (err, products) => {
@@ -123,12 +123,8 @@ router.put('/:id/myProducts', (req, res) => {
 
 router.put('/:id/:productId', (req, res) => {
     Product.findByIdAndUpdate(req.params.productId, req.body, (err, changes) => {
-        if (changes.loggedIn) {
-            res.redirect(`/${req.params.id}/myProducts`);
-        } else {
-            res.redirect("/");
-        }
-    });
+        res.redirect(`/${req.params.id}/myProducts`);
+      });
 });
 
 router.put('/:id/:productId/addToCart', (req, res) => {
@@ -149,6 +145,7 @@ router.put('/:id/:productId/addToCart', (req, res) => {
 
 router.delete('/:id/shoppingCart', (req, res) => {
     User.findByIdAndUpdate(req.params.id, { $pull : { "shoppingCart" : req.body.id}}, (err, foundItems) => {
+            Product.findByIdAndUpdate(req.body.id, { $inc : {"quantity" : 1}}, (err, item) => {})
             if(err) {
                 console.log(err)
             }

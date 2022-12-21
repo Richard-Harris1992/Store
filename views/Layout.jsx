@@ -28,8 +28,7 @@ const footer = {
     height: '45px',
     textAlign : 'center',
     paddingTop: '28px',
-    position: 'relative',
-    bottom: '0'
+    bottom: "0"
 }
 
 const body = {
@@ -55,18 +54,14 @@ class Layout extends React.Component {
                         <a style={a} href={`/${this.props.id}`}>Home</a>
                         <a style={a} href={`/${this.props.id}/myProducts`}>My Products</a>
                         <a style={a} href={`/${this.props.id}/shoppingCart`}>Shopping Cart</a>
-                        {/* <form method="POST">
-                            <input type="hidden" name="_method" value="PUT"></input>
-                            <button type="submit">LOG OUT</button>
-                        </form> */}
                     </nav>
                   </div>
                   <div>
                     {this.props.children}
                   </div>
-                
-                </body>
                 <footer style={footer}>Richards World 2022 &copy;</footer>
+                </body>
+                
             </html>
         )
     }

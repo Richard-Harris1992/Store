@@ -20,13 +20,16 @@ const button = {
     backgroundColor: '#cbdfbd'
 }
 
+const img = {
+    margin: "50px"
+}
 class Show extends React.Component {
     render() {
         const product = this.props.product;
         const user = this.props.user
         return (
             <Layout title={product.productName} id={user.id}>
-                <img src={`${product.image}`} alt="Image of product" />
+                <img style={img} src={`${product.image}`} alt="Image of product" />
                 <p>Description: {product.description}</p>
                 <p>Quantity: {product.quantity}</p>
                 <p>Price: ${product.price}</p>
